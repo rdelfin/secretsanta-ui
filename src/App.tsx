@@ -1,13 +1,13 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import Button from '@material-ui/core/Button';
-import './App.css';
+import React from "react";
+import "./App.css";
+import Page from "./Page";
+import Typography from "@material-ui/core/Typography";
 
 function App() {
   return (
-    <Button variant="contained" color="primary">
-      Hello World
-    </Button>
+    <Page>
+      <Typography>Hello darkness my old friend.</Typography>
+    </Page>
   );
 }
 
