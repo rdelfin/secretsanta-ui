@@ -37,24 +37,29 @@ const styles = (theme: Theme) => ({
   },
 });
 
-interface Participant {
+export interface Participant {
   name: string;
   email: string;
-  notes: string;
+  extra_details: string;
 }
 
-interface GameData {
-  adminName: string;
-  adminEmail: string;
-  dueDate: string;
-  maxAmmount: number;
-  maxCurrency: string;
-  notes: string;
+export interface Currency {
+  amount: number;
+  currency: string;
+}
+
+export interface GameData {
+  admin_name: string;
+  admin_email: string;
+  gift_date: string;
+  max_price: Currency;
+  msg_notes: string;
   participants: Array<Participant>;
 }
 
 interface Props extends WithStyles<typeof styles> {
   onSubmit: (data: GameData) => void;
+  disable: boolean;
 }
 
 interface State {
@@ -81,6 +86,22 @@ class CreateForm extends React.Component<Props, State> {
     };
   }
 
+  submitForm = () => {
+    const participants = [...this.state.participants];
+    const data = {
+      admin_name: this.state.adminName,
+      admin_email: this.state.adminEmail,
+      gift_date: this.state.dueDate,
+      max_price: {
+        amount: this.state.maxAmmount,
+        currency: this.state.maxCurrency,
+      },
+      msg_notes: this.state.notes,
+      participants,
+    };
+    this.props.onSubmit(data);
+  };
+
   updateParticipantName = (value: string, idx: number) => {
     const participants = [...this.state.participants];
     participants[idx].name = value;
@@ -99,7 +120,7 @@ class CreateForm extends React.Component<Props, State> {
 
   updateParticipantNotes = (value: string, idx: number) => {
     const participants = [...this.state.participants];
-    participants[idx].notes = value;
+    participants[idx].extra_details = value;
     this.setState({
       participants,
     });
@@ -107,7 +128,7 @@ class CreateForm extends React.Component<Props, State> {
 
   addParticipant = () => {
     const participants = [...this.state.participants];
-    participants.push({ name: "", email: "", notes: "" });
+    participants.push({ name: "", email: "", extra_details: "" });
     this.setState({
       participants,
     });
@@ -119,20 +140,6 @@ class CreateForm extends React.Component<Props, State> {
     this.setState({
       participants,
     });
-  };
-
-  submitForm = () => {
-    const participants = [...this.state.participants];
-    const data = {
-      adminName: this.state.adminName,
-      adminEmail: this.state.adminEmail,
-      dueDate: this.state.dueDate,
-      maxAmmount: this.state.maxAmmount,
-      maxCurrency: this.state.maxCurrency,
-      notes: this.state.notes,
-      participants,
-    };
-    this.props.onSubmit(data);
   };
 
   render() {
@@ -274,7 +281,7 @@ class CreateForm extends React.Component<Props, State> {
                 </Grid>
                 <TextField
                   id={"participant-notes-" + idx}
-                  value={participant.notes}
+                  value={participant.extra_details}
                   onChange={(e) =>
                     this.updateParticipantNotes(e.target.value, idx)
                   }
@@ -310,6 +317,7 @@ class CreateForm extends React.Component<Props, State> {
           onClick={() => {
             this.submitForm();
           }}
+          disabled={this.props.disable}
           endIcon={<SaveIcon />}
         >
           Send
