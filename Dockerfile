@@ -1,19 +1,16 @@
-# pull official base image
-FROM node:13.12.0-alpine
+FROM node:14.15.1 AS builder
 
-# set working directory
-WORKDIR /app
+WORKDIR /opt/web
+COPY package.json package-lock.json ./
+RUN npm install
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH="./node_modules/.bin:$PATH"
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-
-# add app
 COPY . ./
+RUN npm run build
 
-# start app
-CMD ["npm", "start"]
+FROM nginx:1.19-alpine
+COPY ./nginx.config /etc/nginx/nginx.template
+ENV PORT=80
+CMD ["/bin/sh", "-c", "envsubst '$PORT' < /etc/nginx/nginx.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+COPY --from=builder /opt/web/build /usr/share/nginx/html
