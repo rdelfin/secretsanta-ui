@@ -91,7 +91,7 @@ class CreateForm extends React.Component<Props, State> {
     const data = {
       admin_name: this.state.adminName,
       admin_email: this.state.adminEmail,
-      gift_date: this.state.dueDate,
+      gift_date: this.state.dueDate + "T00:00:00Z",
       max_price: {
         amount: this.state.maxAmount,
         currency: this.state.maxCurrency,
