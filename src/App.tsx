@@ -10,7 +10,11 @@ function App() {
     <Page>
       <Container maxWidth="sm">
         <Typography variant="h2">Create a Secret Santa</Typography>
-        <CreateForm />
+        <CreateForm
+          onSubmit={(data) => {
+            console.log(JSON.stringify(data));
+          }}
+        />
       </Container>
     </Page>
   );

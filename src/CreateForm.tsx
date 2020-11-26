@@ -14,6 +14,8 @@ import CardActions from "@material-ui/core/CardActions";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import DeleteIcon from "@material-ui/icons/Delete";
+import SaveIcon from "@material-ui/icons/Save";
+import Button from "@material-ui/core/Button";
 
 const styles = (theme: Theme) => ({
   root: {
@@ -45,8 +47,27 @@ interface Participant {
   notes: string;
 }
 
-interface Props extends WithStyles<typeof styles> {}
+interface GameData {
+  adminName: string;
+  adminEmail: string;
+  dueDate: string;
+  maxAmmount: number;
+  maxCurrency: string;
+  notes: string;
+  participants: Array<Participant>;
+}
+
+interface Props extends WithStyles<typeof styles> {
+  onSubmit: (data: GameData) => void;
+}
+
 interface State {
+  adminName: string;
+  adminEmail: string;
+  dueDate: string;
+  maxAmmount: number;
+  maxCurrency: string;
+  notes: string;
   participants: Array<Participant>;
 }
 
@@ -54,6 +75,12 @@ class CreateForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      adminName: "",
+      adminEmail: "",
+      dueDate: "2020-12-25",
+      maxAmmount: 0.0,
+      maxCurrency: "MXN",
+      notes: "",
       participants: [],
     };
   }
@@ -76,7 +103,7 @@ class CreateForm extends React.Component<Props, State> {
 
   updateParticipantNotes = (value: string, idx: number) => {
     const participants = [...this.state.participants];
-    participants[idx].email = value;
+    participants[idx].notes = value;
     this.setState({
       participants,
     });
@@ -98,6 +125,20 @@ class CreateForm extends React.Component<Props, State> {
     });
   };
 
+  submitForm = () => {
+    const participants = [...this.state.participants];
+    const data = {
+      adminName: this.state.adminName,
+      adminEmail: this.state.adminEmail,
+      dueDate: this.state.dueDate,
+      maxAmmount: this.state.maxAmmount,
+      maxCurrency: this.state.maxCurrency,
+      notes: this.state.notes,
+      participants,
+    };
+    this.props.onSubmit(data);
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -105,10 +146,25 @@ class CreateForm extends React.Component<Props, State> {
       <form className={classes.root} noValidate autoComplete="off">
         <Grid container className={classes.row}>
           <Grid item xs={6}>
-            <TextField id="standard-basic" label="Admin Name" />
+            <TextField
+              id="admin-name"
+              label="Admin Name"
+              value={this.state.adminName}
+              onChange={(e) => {
+                this.setState({ adminName: e.target.value });
+              }}
+            />
           </Grid>
           <Grid item xs={6}>
-            <TextField id="standard-basic" label="Admin Email" type="email" />
+            <TextField
+              id="admin-email"
+              label="Admin Email"
+              type="email"
+              value={this.state.adminEmail}
+              onChange={(e) => {
+                this.setState({ adminEmail: e.target.value });
+              }}
+            />
           </Grid>
         </Grid>
 
@@ -120,18 +176,26 @@ class CreateForm extends React.Component<Props, State> {
               type="date"
               defaultValue="2020-12-25"
               className={classes.datePicker}
+              value={this.state.dueDate}
+              onChange={(e) => {
+                this.setState({ dueDate: e.target.value });
+              }}
             />
           </Grid>
         </Grid>
 
         <Grid container className={classes.row}>
           <Grid item xs={12}>
-            <TextField id="value" label="Value" type="number" />
+            <TextField id="max-value" label="Max Gift Value" type="number" />
             <TextField
-              id="currency"
+              id="max-currency"
               label="Currency"
               select
               className={classes.currencyPicker}
+              value={this.state.maxCurrency}
+              onChange={(e) => {
+                this.setState({ maxCurrency: e.target.value });
+              }}
             >
               <MenuItem key={"MXN"} value={"MXN"}>
                 MXN (Mexican Peso)
@@ -155,6 +219,10 @@ class CreateForm extends React.Component<Props, State> {
               multiline={true}
               rows={5}
               className={classes.noteArea}
+              value={this.state.notes}
+              onChange={(e) => {
+                this.setState({ notes: e.target.value });
+              }}
             />
           </Grid>
         </Grid>
@@ -238,6 +306,18 @@ class CreateForm extends React.Component<Props, State> {
             </Card>
           );
         })}
+        <br />
+        <Button
+          variant="contained"
+          color="primary"
+          id="submit"
+          onClick={() => {
+            this.submitForm();
+          }}
+          endIcon={<SaveIcon />}
+        >
+          Send
+        </Button>
       </form>
     );
   }
