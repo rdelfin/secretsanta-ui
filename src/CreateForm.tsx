@@ -66,7 +66,7 @@ interface State {
   adminName: string;
   adminEmail: string;
   dueDate: string;
-  maxAmmount: number;
+  maxAmount: number;
   maxCurrency: string;
   notes: string;
   participants: Array<Participant>;
@@ -79,7 +79,7 @@ class CreateForm extends React.Component<Props, State> {
       adminName: "",
       adminEmail: "",
       dueDate: "2020-12-25",
-      maxAmmount: 0.0,
+      maxAmount: 0.0,
       maxCurrency: "MXN",
       notes: "",
       participants: [],
@@ -93,7 +93,7 @@ class CreateForm extends React.Component<Props, State> {
       admin_email: this.state.adminEmail,
       gift_date: this.state.dueDate,
       max_price: {
-        amount: this.state.maxAmmount,
+        amount: this.state.maxAmount,
         currency: this.state.maxCurrency,
       },
       msg_notes: this.state.notes,
@@ -189,7 +189,16 @@ class CreateForm extends React.Component<Props, State> {
 
         <Grid container className={classes.row}>
           <Grid item xs={12}>
-            <TextField id="max-value" label="Max Gift Value" type="number" />
+            <TextField
+              id="max-value"
+              label="Max Gift Value"
+              type="number"
+              value={this.state.maxAmount}
+              onChange={(e) => {
+                console.log("");
+                this.setState({ maxAmount: parseInt(e.target.value) });
+              }}
+            />
             <TextField
               id="max-currency"
               label="Currency"
