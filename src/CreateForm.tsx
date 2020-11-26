@@ -49,6 +49,7 @@ export interface Currency {
 }
 
 export interface GameData {
+  name: string;
   admin_name: string;
   admin_email: string;
   gift_date: string;
@@ -63,6 +64,7 @@ interface Props extends WithStyles<typeof styles> {
 }
 
 interface State {
+  name: string;
   adminName: string;
   adminEmail: string;
   dueDate: string;
@@ -76,6 +78,7 @@ class CreateForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
+      name: "",
       adminName: "",
       adminEmail: "",
       dueDate: "2020-12-25",
@@ -89,6 +92,7 @@ class CreateForm extends React.Component<Props, State> {
   submitForm = () => {
     const participants = [...this.state.participants];
     const data = {
+      name: this.state.name,
       admin_name: this.state.adminName,
       admin_email: this.state.adminEmail,
       gift_date: this.state.dueDate + "T00:00:00Z",
@@ -172,7 +176,17 @@ class CreateForm extends React.Component<Props, State> {
         </Grid>
 
         <Grid container className={classes.row}>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
+            <TextField
+              id="game-name"
+              label="Game Name"
+              value={this.state.name}
+              onChange={(e) => {
+                this.setState({ name: e.target.value });
+              }}
+            />
+          </Grid>
+          <Grid item xs={6}>
             <TextField
               id="gift-date"
               label="Gift Date"
